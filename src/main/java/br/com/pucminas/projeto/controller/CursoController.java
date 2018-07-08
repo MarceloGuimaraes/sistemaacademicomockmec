@@ -33,7 +33,7 @@ public class CursoController {
 	public ModelAndView pesquisar(@ModelAttribute("filtro") CursoFilter filtro) {
 		List<Curso> todosCursos = cursoServices.filtrar(filtro);
 		
-		ModelAndView mv = new ModelAndView("PesquisaAlunos");
+		ModelAndView mv = new ModelAndView("Cursos");
 		mv.addObject("cursos", todosCursos);
 		return mv;
 	}
