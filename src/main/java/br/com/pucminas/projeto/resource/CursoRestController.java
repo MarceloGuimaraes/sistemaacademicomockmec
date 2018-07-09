@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.pucminas.projeto.event.RecursoCriadoEvent;
 import br.com.pucminas.projeto.model.Curso;
 import br.com.pucminas.projeto.repository.Cursos;
+import br.com.pucminas.projeto.service.SyncLegadoData;
 
 @RestController
 @RequestMapping("/meccursosync")
@@ -28,6 +29,9 @@ public class CursoRestController {
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
+	
+	@Autowired
+	private SyncLegadoData syncLegadoData;
 	
 	@GetMapping
 	public ResponseEntity<?> listar() {
@@ -41,6 +45,8 @@ public class CursoRestController {
 		Curso cursoSalvo = cursoServices.save(curso);
 		
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, cursoSalvo.getCodigo()));
+		
+		syncLegadoData.enviar(false, curso.toString());
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(cursoSalvo);
 		

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.pucminas.projeto.event.RecursoCriadoEvent;
 import br.com.pucminas.projeto.model.Aluno;
 import br.com.pucminas.projeto.service.CadastroAlunoService;
+import br.com.pucminas.projeto.service.SyncLegadoData;
 
 @RestController
 @RequestMapping("/mecalunosync")
@@ -28,6 +29,9 @@ public class AlunoRestController {
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
+	
+	@Autowired
+	private SyncLegadoData syncLegadoData;
 	
 	@GetMapping
 	public ResponseEntity<?> listar() {
@@ -48,6 +52,8 @@ public class AlunoRestController {
 		 */
 		
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, alunoSalvo.getCodigo()));
+		
+		syncLegadoData.enviar(false,alunoSalvo.toString());
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(alunoSalvo);
 		
